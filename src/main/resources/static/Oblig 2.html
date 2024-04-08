@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="Oblig 2.js"></script>
+</head>
+<body>
+<h2>Bestilling av kinobilleter</h2>
+<table>
+  <label for="film">Velg en film:</label>
+  <select id="film" onchange="validerFilm()">
+    <option value="Dune 2"> Dune 2</option>
+    <option value="Batman"> The Batman</option>
+    <option value="cars"> Cars</option>
+    <option value="Avatar"> Avatar</option>
+  </select>
+  <span  id="filmerror" style="color: red"></span>
+
+  <tr>
+    <td>Antall</td>
+    <td><input  type="number" id="antall" min="1" style="width: 30px"/>
+      <span id="feilantall"  style="color: red"></span>
+
+    </td>
+  </tr>
+  <tr>
+    <td>Fornavn</td>
+    <td><input type="text" id="fornavn"/>
+      <span id="feilNavn" style="color: red"></span></td>
+  </tr>
+  <tr>
+    <td>Etternavn</td>
+    <td><input  type="text" id="etternavn"/>
+      <span id="feiletternavn" style="color: red"></span></td>
+  </tr>
+  <tr>
+    <td>Telefonnr</td>
+    <td><input onchange="validerTelefon()"  type="number" id="telefonnr"/>
+      <span id="feiltelefon" style="color: red"></span></td>
+  </tr>
+  <tr>
+    <td>Epost</td>
+    <td><input onchange="validerEpost()" type="text" id="epost"/>
+      <span id="feilepost" style="color: red"></span></td>
+  </tr>
+  <tr><td><button onclick="leggTilBillett()">Kjøp billett</button> </td></tr>
+
+</table>
+<h2>Alle billeter</h2>
+<button onclick="slettBillett()">Slett alle  billettene </button>
+<div id="billetter">
+  <br>
+
+</div>
+</body>
+</html>
