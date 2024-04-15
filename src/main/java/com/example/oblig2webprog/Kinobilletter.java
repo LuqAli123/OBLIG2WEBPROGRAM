@@ -2,13 +2,13 @@ package com.example.oblig2webprog;
 
 public class Kinobilletter {
     private String film;
-    private int antall;
+    private String antall;
     private String fornavn;
     private String etternavn;
-    private int telefonnr;
+    private String telefonnr;
     private String epost;
 
-    public Kinobilletter(String film, int antall, String fornavn,String etternavn, int telefonnr, String epost ){
+    public Kinobilletter(String film, String antall, String fornavn,String etternavn, String telefonnr, String epost ){
         this.antall = antall;
         this.film = film;
         this.fornavn = fornavn;
@@ -17,13 +17,14 @@ public class Kinobilletter {
         this.telefonnr = telefonnr;
     }
 
-    public int getAntall() {
+    public String getAntall() {
         return antall;
     }
 
-    public void setAntall(int antall) {
+    public void setAntall(String antall) {
         this.antall = antall;
     }
+
     public String getFilm() {
         return film;
     }
@@ -46,11 +47,11 @@ public class Kinobilletter {
     }
 
 
-    public int getTelefonnr() {
+    public String getTelefonnr() {
         return telefonnr;
     }
 
-    public void setTelefonnr(int telefonnr) {
+    public void setTelefonnr(String telefonnr) {
         this.telefonnr = telefonnr;
     }
     public String getEpost() {
