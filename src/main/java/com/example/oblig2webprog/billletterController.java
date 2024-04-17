@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 @RestController
@@ -14,10 +15,18 @@ import java.util.ArrayList;
 @RequestMapping("/")
 public class billletterController {
     @Autowired
-    BillettRepository repository;
+    public final List<Kinobilletter> kinobillett = new ArrayList<>();
 
-    @PostMapping("/bestill")
+    @PostMapping("/lagre")
     public void lagre(Kinobilletter kinobilletter){
-
+        kinobillett.add(kinobilletter);
+    }
+    @GetMapping("/hentAlle")
+    public List<Kinobilletter> hentAlle(){
+        return kinobillett;
+    }
+    @GetMapping("/slett")
+    public void slettBillett(){
+        kinobillett.clear();
     }
 }

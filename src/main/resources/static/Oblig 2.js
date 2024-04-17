@@ -1,6 +1,6 @@
+const billetter  = [];
 function leggTilBillett(){
     if (document.getElementById("film").value === ""){
-
     }
 
     if (document.getElementById("filmerror").innerHTML !== "" ||
@@ -57,6 +57,18 @@ function leggTilBillett(){
         document.getElementById("feilantall").innerText = "Må skrive inn antall"
     }
 }
+
+function hentAlle(){
+   $.get("/hentAlle",function (data){
+       henteData(data);
+   })
+    function henteData(){
+        let ut = "<table class='table table-striped table-bordered'>" ;
+        ut += "<tr><th>Film</th><th>Antall</th><th>Fornavn</th><th>Etternavn" +
+            "</th><th>Telefonnr</th><th>Epost</th>" + "</tr>";
+
+    }
+}
 //funksjon som valider telefonnummeret
 function validerTelefon(telefon){
     let regex = /^[0-9]{8}$/;
@@ -73,6 +85,7 @@ function validerEpost(epost){
 }
 //funksjon som sletter billetten
 function slettBillett(){
+    $.get("/slett").val();
     while(billetter.length !==0){
         billetter.pop();
     }
