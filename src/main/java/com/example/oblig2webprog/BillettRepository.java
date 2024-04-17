@@ -7,10 +7,6 @@ import java.util.ArrayList;
 
 @Repository
 public class BillettRepository {
-    private final ArrayList<Kinobilletter> billettlist = new ArrayList<>();
-    private void leggInn(Kinobilletter kinobilletter){
-        billettlist.add(kinobilletter);
-    }
 
 }
 

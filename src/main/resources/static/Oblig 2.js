@@ -1,93 +1,125 @@
-const billetter  = [];
-function leggTilBillett(){
-    if (document.getElementById("film").value === ""){
-    }
+function feilMelding(){
+    $("#feil1").html("");
+    $("#feil2").html("");
+    $("#feil3").html("");
+    $("#feil4").html("");
+    $("#feil5").html("");
+    $("#feil6").html("");
+    $("#feil7").html("");
+}
 
-    if (document.getElementById("filmerror").innerHTML !== "" ||
-        document.getElementById("feilepost").innerHTML !== "" ||
-        document.getElementById("feiltelefon").innerHTML !== "" ||
-        document.getElementById("feilNavn").innerHTML !== "" ||
-        document.getElementById("feilantall").innerHTML !== "" ||
-        document.getElementById("feiletternavn").innerHTML !== ""){
-        return;
-    }
-    let eksisterendeBilletter = billetter.length; // Lagrer antall billetter allerede skrevet ut
-    //Oppretter et billett objekt fra input
-    const billett = {
-        film: document.getElementById("film").value,
-        antall: document.getElementById("antall").value,
-        navn: document.getElementById("fornavn").value,
-        etternavn: document.getElementById("etternavn").value,
-        telefon: document.getElementById("telefonnr").value,
-        epost: document.getElementById("epost").value
+function kjopBillett(){
+
+    feilMelding();
+    const billett={
+        film : $("#film").val(),
+        antall : $("#antall").val(),
+        fornavn : $("#fornavn").val(),
+        etternavn : $("#etternavn").val(),
+        adresse : $("#adresse").val(),
+        mobilnummer : $("#mobilnummer").val(),
+        epost : $("#epost").val(),
     };
-    //Legger til billett objektet i billetter arrayet
-    billetter.push(billett);
-    for (let i = eksisterendeBilletter; i < billetter.length; i++) {
-        let nyttAvsnitt = document.createElement("p");
-        nyttAvsnitt.textContent = "Film: " + billetter[i].film + ", antall: " + billetter[i].antall + ", navn: " + billetter[i].navn + " " + billetter[i].etternavn + ", telefonnummer: " + billetter[i].telefon + ", epost: " + billetter[i].epost;
-        document.getElementById("billetter").appendChild(nyttAvsnitt);
-        document.getElementById("billetter").appendChild(document.createElement("br"));
+    $.post("/lagreKunde", billett, function (){
+        hentAlt();
+    });
+
+    let valid = true;
+
+    if (billett.film === "") {
+        $("#feil1").html("Velg film");
     }
-    //resetter input feltene etter at billetter er kjøpt.
-    document.getElementById("film").value = "";
-    document.getElementById("antall").value = "";
-    document.getElementById("fornavn").value = "";
-    document.getElementById("etternavn").value = "";
-    document.getElementById("telefonnr").value = "";
-    document.getElementById("epost").value = "";
-    // setter opp melding hvis bruker prøver å kjøpe billetter med et tomt felt
-    if (document.getElementById("fornavn").value === ""){
-        document.getElementById("feilNavn").innerText = "Må skrive inn fornavn"
+    if (billett.antall === "") {
+        $("#feil2").html("Velg antall");
+    }
+    if (billett.fornavn === "") {
+        $("#feil3").html("Fornavn feltet er påkrevet");
+    }
+    if (billett.etternavn === "") {
+        $("#feil4").html("Etternavn feltet er påkrevet");
+    }
+    if (billett.adresse === "") {
+        $("#feil5").html("Adresse feltet er påkrevet");
     }
 
-    if (document.getElementById("etternavn").value === ""){
-        document.getElementById("feiletternavn").innerText = "Må skrive inn etternavn"
+    // Mobilnummer validation
+    const mobilnummer = $("#mobilnummer").val();
+    if (mobilnummer === "") {
+        $("#feil6").text("Mobilnummer feltet er påkrevet");
+        valid = false;
+    } else if (valMobilnummer(mobilnummer)) {
+        settFeil("feil6", "Ugyldig mobilnummer, maks 8 siffer.");
+        valid = false;
     }
 
-    if (document.getElementById("epost").value === ""){
-        document.getElementById("feilepost").innerText = "Må  skrive inn riktig epost"
+    // Epost validation
+    const epost = $("#epost").val();
+    if (epost === "") {
+        $("#feil7").text("E-post feltet er påkrevet.");
+        valid = false;
+    } else if (valEpost(epost)) {
+        settFeil("feil7", "Vennligst skriv inn en gyldig e-post.");
+        console.log("1");
+        valid = false;
     }
 
-    if(document.getElementById("telefonnr").value === ""){
-        document.getElementById("feiltelefon").innerText = "Må skrive inn telefon"
-    }
-
-    if (document.getElementById("antall").value === ""){
-        document.getElementById("feilantall").innerText = "Må skrive inn antall"
-    }
+    return valid;
 }
 
-function hentAlle(){
-   $.get("/hentAlle",function (data){
-       henteData(data);
-   })
-    function henteData(){
-        let ut = "<table class='table table-striped table-bordered'>" ;
-        ut += "<tr><th>Film</th><th>Antall</th><th>Fornavn</th><th>Etternavn" +
-            "</th><th>Telefonnr</th><th>Epost</th>" + "</tr>";
+function hentAlt(){
+    $.get("/hentAlt", function (data){
+        hentData(data);
+    });
+}
 
+function hentData(format){
+    let ut = "<table class='table table-striped'>" +
+        "<tr><th>Film</th><th>Antall</th><th>Fornavn</th><th>Etternavn</th><th>Adresse</th>" +
+        "<th>Mobilnummer</th><th>Epost</th></tr>";
+    for (let billett of format) {
+        ut += "<tr><td>" + billett.film + "</td><td>" + billett.antall +
+            "</td><td>" + billett.fornavn + "</td><td>"
+            + billett.etternavn + "</td><td>" + billett.adresse + "</td><td>" + billett.mobilnummer +
+            "</td><td>" + billett.epost + "</td>"
+        ut += "</tr>";
     }
+    ut += "</table>";
+    $("#filmene").html(ut);
 }
-//funksjon som valider telefonnummeret
-function validerTelefon(telefon){
-    let regex = /^[0-9]{8}$/;
-    if (regex.test(telefon)){
-        return true;
-    }
-}
-//funksjon som validerer epost addressen
-function validerEpost(epost){
-    let regex = /^[a-zA-Z0-9. _-]+@[a-zA-Z0-9. -]+\. [a-zA-Z]{2,4}$/
-    if (regex.test(epost)){
-        return true;
-    }
-}
-//funksjon som sletter billetten
+
 function slettBillett(){
-    $.get("/slett").val();
-    while(billetter.length !==0){
-        billetter.pop();
+    $.get("/slettBillett", function (){
+        hentAlt();
+    });
+    feilMelding();
+}
+
+function settFeil(elementId, melding){
+    document.getElementById(elementId).innerText = melding;
+}
+
+//Mobilnummer validering
+function valMobilnummer(){
+    const mobilnummer = $("#mobilnummer").val();
+    let regx =/^[0-9]{8}$/;
+    if (regx.test(mobilnummer)){
+        $("feil6").html("");
+        return false;
     }
-    document.getElementById("billetter").innerHTML = "";
+    else {
+        return true;
+    }
+}
+
+//E-post validering
+function valEpost(){
+    const epost = $("#epost").val();
+    let regx = /^[a-z A-Z0-9.-]+@[a-z]+\.[a-zA-Z]{2,}$/;
+    if (regx.test(epost)){
+        $("feil7").html("");
+        return false;
+    }
+    else {
+        return true;
+    }
 }
