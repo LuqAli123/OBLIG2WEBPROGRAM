@@ -20,6 +20,7 @@ public class Billett {
         this.film = film;
 
     }
+    public Billett(){}
 
     public String getAntall() {return antall;}
     public void setAntall(String antall) {this.antall = antall;}

@@ -1,4 +1,5 @@
 function feilMelding(){
+    let valid = true;
     $("#feil1").html("");
     $("#feil2").html("");
     $("#feil3").html("");
@@ -9,73 +10,94 @@ function feilMelding(){
 }
 
 function kjopBillett(){
-
     feilMelding();
-    const billett={
-        film : $("#film").val(),
-        antall : $("#antall").val(),
-        fornavn : $("#fornavn").val(),
-        etternavn : $("#etternavn").val(),
-        adresse : $("#adresse").val(),
-        mobilnummer : $("#mobilnummer").val(),
-        epost : $("#epost").val(),
-    };
-    $.post("/lagreKunde", billett, function (){
-        hentAlt();
-    });
-
     let valid = true;
 
-    if (billett.film === "") {
+    if (film === "") {
+        valid  = false;
         $("#feil1").html("Velg film");
+    }else {
+        $("#feil1").html("")
     }
-    if (billett.antall === "") {
+    if (antall === "") {
+        valid = false
         $("#feil2").html("Velg antall");
+    }else {
+        $("#feil2").html("")
     }
-    if (billett.fornavn === "") {
+    if (fornavn === "") {
+        valid = false;
         $("#feil3").html("Fornavn feltet er påkrevet");
+    }else {
+
+        $("#feil3").html("")
     }
-    if (billett.etternavn === "") {
+    if (etternavn === "") {
+        valid = false
         $("#feil4").html("Etternavn feltet er påkrevet");
+    }else {
+        $("#feil4").html("")
     }
-    if (billett.adresse === "") {
+    if (adresse === "") {
+        valid = false;
         $("#feil5").html("Adresse feltet er påkrevet");
+    }else {
+        $("#feil5").html("")
     }
 
     // Mobilnummer validation
     const mobilnummer = $("#mobilnummer").val();
     if (mobilnummer === "") {
+        valid = false;
         $("#feil6").text("Mobilnummer feltet er påkrevet");
-        valid = false;
     } else if (valMobilnummer(mobilnummer)) {
-        settFeil("feil6", "Ugyldig mobilnummer, maks 8 siffer.");
         valid = false;
+        settFeil("feil6", "Ugyldig mobilnummer, maks 8 siffer.");
+    }else {
+        $("#feil6").html("");
     }
 
     // Epost validation
     const epost = $("#epost").val();
     if (epost === "") {
+        valid = false;
         $("#feil7").text("E-post feltet er påkrevet.");
-        valid = false;
     } else if (valEpost(epost)) {
-        settFeil("feil7", "Vennligst skriv inn en gyldig e-post.");
-        console.log("1");
         valid = false;
+        settFeil("feil7", "Vennligst skriv inn en gyldig e-post.");
+    }else {
+        $("#feil7").html("");
     }
+    if (valid){
+        const billett={
+            film : $("#film").val(),
+            antall : $("#antall").val(),
+            fornavn : $("#fornavn").val(),
+            etternavn : $("#etternavn").val(),
+            adresse : $("#adresse").val(),
+            mobilnummer : $("#mobilnummer").val(),
+            epost : $("#epost").val(),
+        };
+        $.post("/lagreKunde", billett, function (){
+            hentAlle();
 
-    return valid;
+        });
+
+    }
 }
 
-function hentAlt(){
+function hentAlle(){
     $.get("/hentAlt", function (data){
         hentData(data);
     });
 }
 
 function hentData(format){
+
     let ut = "<table class='table table-striped'>" +
         "<tr><th>Film</th><th>Antall</th><th>Fornavn</th><th>Etternavn</th><th>Adresse</th>" +
         "<th>Mobilnummer</th><th>Epost</th></tr>";
+
     for (let billett of format) {
         ut += "<tr><td>" + billett.film + "</td><td>" + billett.antall +
             "</td><td>" + billett.fornavn + "</td><td>"
@@ -84,12 +106,12 @@ function hentData(format){
         ut += "</tr>";
     }
     ut += "</table>";
-    $("#filmene").html(ut);
+    $("#alt").html(ut);
 }
 
 function slettBillett(){
     $.get("/slettBillett", function (){
-        hentAlt();
+        hentAlle();
     });
     feilMelding();
 }
@@ -99,27 +121,18 @@ function settFeil(elementId, melding){
 }
 
 //Mobilnummer validering
-function valMobilnummer(){
-    const mobilnummer = $("#mobilnummer").val();
+function valMobilnummer(mobilnummer){
     let regx =/^[0-9]{8}$/;
     if (regx.test(mobilnummer)){
-        $("feil6").html("");
-        return false;
-    }
-    else {
         return true;
     }
 }
 
 //E-post validering
-function valEpost(){
-    const epost = $("#epost").val();
+function valEpost(epost){
     let regx = /^[a-z A-Z0-9.-]+@[a-z]+\.[a-zA-Z]{2,}$/;
     if (regx.test(epost)){
-        $("feil7").html("");
-        return false;
-    }
-    else {
         return true;
     }
+
 }

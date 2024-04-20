@@ -13,12 +13,12 @@ import java.util.List;
 
 public class BilllettController {
    public final List<Billett>billettRegister =new ArrayList<>();
-    @PostMapping()
+    @PostMapping("/lagreKunde")
    public void lagreKunde(Billett film){
         billettRegister.add(film);
    }
    @GetMapping("/hentAlt")
-   public List<Billett> hentalt(){
+   public List<Billett> hentalle(){
         return billettRegister;
    }
    @GetMapping("/slettBillett")
